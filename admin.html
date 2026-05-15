@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Survey Results | FQ Wellness 2026</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="config.js"></script>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#F2E8D9;color:#21232C;min-height:100vh}
+    .hdr{background:#21232C;height:64px;display:flex;align-items:center;padding:0 28px;box-shadow:0 2px 12px rgba(0,0,0,.2)}
+    .hdr-in{max-width:1300px;margin:0 auto;width:100%;display:flex;align-items:center;justify-content:space-between}
+    .logo{display:flex;align-items:center;gap:10px}
+    .logo-mark{background:#C08129;color:#fff;font-weight:900;font-size:14px;width:36px;height:36px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .logo-name{color:#fff;font-size:15px;font-weight:600;line-height:1.2}
+    .logo-dept{color:rgba(255,255,255,.48);font-size:12px}
+    .hdr-right{display:flex;align-items:center;gap:10px}
+    .btn-hdr{padding:8px 16px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
+    .btn-export{background:rgba(192,129,41,.18);color:#C08129;border:1px solid rgba(192,129,41,.35)}.btn-export:hover{background:rgba(192,129,41,.32)}
+    .btn-clear{background:transparent;color:rgba(255,255,255,.45);border:1px solid rgba(255,255,255,.15)}.btn-clear:hover{color:#fff;border-color:rgba(255,255,255,.4)}
+
+    /* LOGIN */
+    #login{display:flex;align-items:center;justify-content:center;min-height:100vh;background:#F2E8D9}
+    .login-card{background:#F2F2EE;border-radius:16px;padding:52px 44px;box-shadow:0 4px 24px rgba(33,35,44,.1);text-align:center;width:100%;max-width:420px;border:1px solid #CBC4BB}
+    .login-icon{font-size:48px;margin-bottom:20px}
+    .login-card h1{font-size:22px;font-weight:700;color:#21232C;margin-bottom:8px}
+    .login-card p{font-size:14px;color:#72806D;margin-bottom:28px}
+    .pw-in{width:100%;padding:13px 16px;border:2px solid #CBC4BB;border-radius:8px;font-size:15px;color:#21232C;outline:none;transition:border-color .15s;margin-bottom:12px;font-family:inherit;background:#F2E8D9}
+    .pw-in:focus{border-color:#21232C}
+    .btn-login{width:100%;background:#21232C;color:#fff;border:none;padding:14px;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;transition:background .2s}
+    .btn-login:hover{background:#72806D}
+    .login-err{color:#b83232;font-size:13px;margin-top:8px;display:none}.login-err.show{display:block}
+
+    /* DASHBOARD */
+    #dash{display:none}
+    .wrap{max-width:1300px;margin:0 auto;padding:28px 24px 64px}
+
+    /* IMPORT ZONE */
+    .import-card{background:#F2F2EE;border-radius:12px;padding:24px;box-shadow:0 2px 8px rgba(33,35,44,.06);margin-bottom:24px;border:1px solid #CBC4BB}
+    .import-card h2{font-size:15px;font-weight:700;color:#21232C;margin-bottom:4px}
+    .import-sub{font-size:13px;color:#72806D;margin-bottom:16px}
+    .drop-zone{border:2px dashed #CBC4BB;border-radius:10px;padding:28px;text-align:center;cursor:pointer;transition:all .2s;position:relative}
+    .drop-zone:hover,.drop-zone.over{border-color:#21232C;background:#EDE7DF}
+    .drop-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+    .drop-icon{font-size:32px;margin-bottom:8px}
+    .drop-txt{font-size:14px;color:#72806D}
+    .drop-txt strong{color:#21232C}
+    .import-status{margin-top:12px;font-size:13px;color:#72806D;font-weight:600;display:none}
+    .import-status.show{display:block}
+    .ls-row{display:flex;align-items:center;gap:12px;margin-top:12px;padding-top:12px;border-top:1px solid #CBC4BB}
+    .ls-txt{font-size:13px;color:#72806D;flex:1}
+    .btn-ls{background:#21232C;color:#fff;border:none;padding:8px 18px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;transition:background .2s;white-space:nowrap}
+    .btn-ls:hover{background:#72806D}
+
+    /* STATS */
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+    .stat{background:#F2F2EE;border-radius:12px;padding:22px;box-shadow:0 2px 8px rgba(33,35,44,.06);border-left:4px solid #21232C;border-top:1px solid #CBC4BB;border-right:1px solid #CBC4BB;border-bottom:1px solid #CBC4BB}
+    .stat.gold{border-left-color:#C08129}.stat.teal{border-left-color:#72806D}.stat.purple{border-left-color:#7c8a78}
+    .stat-val{font-size:30px;font-weight:800;color:#21232C;line-height:1}
+    .stat.gold .stat-val{color:#C08129}.stat.teal .stat-val{color:#72806D}.stat.purple .stat-val{color:#7c8a78}
+    .stat-lbl{font-size:13px;color:#72806D;margin-top:6px}
+
+    /* CHARTS */
+    .charts-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
+    .chart-card{background:#F2F2EE;border-radius:12px;padding:24px;box-shadow:0 2px 8px rgba(33,35,44,.06);border:1px solid #CBC4BB}
+    .chart-card.full{margin-bottom:20px}
+    .ct{font-size:15px;font-weight:700;color:#21232C;margin-bottom:18px}
+    .ct-sub{font-size:12px;color:#9a9590;font-weight:400;margin-left:6px}
+
+    /* TEXT RESPONSES */
+    .text-section{margin-top:8px}
+    .text-section h2{font-size:18px;font-weight:700;color:#21232C;margin-bottom:16px}
+    .text-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    .text-card{background:#F2F2EE;border-radius:12px;padding:24px;box-shadow:0 2px 8px rgba(33,35,44,.06);border:1px solid #CBC4BB}
+    .text-card h3{font-size:14px;font-weight:700;color:#21232C;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid #CBC4BB}
+    .tlist{max-height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:8px}
+    .tlist::-webkit-scrollbar{width:4px}.tlist::-webkit-scrollbar-track{background:#EDE7DF;border-radius:4px}.tlist::-webkit-scrollbar-thumb{background:#CBC4BB;border-radius:4px}
+    .titem{background:#F2E8D9;border:1px solid #CBC4BB;border-radius:8px;padding:10px 14px;font-size:14px;color:#21232C;line-height:1.5}
+    .tempty{color:#9a9590;font-size:14px;font-style:italic}
+
+    /* EMPTY */
+    .empty{text-align:center;padding:72px 24px;color:#9a9590}
+    .empty .ei{font-size:56px;margin-bottom:16px}
+    .empty h2{font-size:20px;font-weight:600;color:#72806D;margin-bottom:8px}
+    .empty p{font-size:14px}
+
+    @media(max-width:900px){.stats{grid-template-columns:1fr 1fr}.charts-2{grid-template-columns:1fr}.text-grid{grid-template-columns:1fr}}
+    @media(max-width:560px){.stats{grid-template-columns:1fr 1fr}.wrap{padding:16px 14px 48px}}
+  </style>
+</head>
+<body>
+
+<div id="login">
+  <div class="login-card">
+    <div class="login-icon">🔐</div>
+    <h1>HR Admin Dashboard</h1>
+    <p>Employee Wellness &amp; Events Survey 2026</p>
+    <input type="password" id="pw" class="pw-in" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')login()">
+    <button class="btn-login" onclick="login()">View Results</button>
+    <div class="login-err" id="pw-err">Incorrect password. Please try again.</div>
+  </div>
+</div>
+
+<div id="dash">
+  <div class="hdr"><div class="hdr-in">
+    <div class="logo"><div class="logo-mark">FQ</div><div><div class="logo-name">Furnished Quarters</div><div class="logo-dept">Wellness Survey Results 2026</div></div></div>
+    <div class="hdr-right">
+      <button class="btn-hdr btn-export" onclick="exportCSV()">⬇ Export CSV</button>
+      <button class="btn-hdr btn-clear" onclick="clearData()">Clear Data</button>
+    </div>
+  </div></div>
+  <div class="wrap">
+
+    <!-- IMPORT ZONE -->
+    <div class="import-card">
+      <h2>Survey Responses</h2>
+      <div class="import-sub">Responses are saved automatically when employees submit the survey. Hit refresh to load the latest.</div>
+      <div class="ls-row" style="border-top:none;padding-top:0;margin-top:0">
+        <div class="ls-txt" id="asana-txt">Loading…</div>
+        <button class="btn-ls" id="asana-btn" onclick="loadFromServer()" style="display:none">Refresh</button>
+      </div>
+      <div class="import-status" id="import-status"></div>
+      <details style="margin-top:14px">
+        <summary style="font-size:12px;color:#94a3b8;cursor:pointer;user-select:none">Manual import (backup)</summary>
+        <div style="margin-top:12px">
+          <div class="drop-zone" id="drop-zone" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
+            <input type="file" accept=".json" multiple onchange="onFileSelect(event)">
+            <div class="drop-icon">📂</div>
+            <div class="drop-txt"><strong>Click to select files</strong> or drag &amp; drop response JSON files here</div>
+          </div>
+          <div class="ls-row">
+            <div class="ls-txt" id="ls-txt">Checking for locally saved responses…</div>
+            <button class="btn-ls" id="ls-btn" onclick="loadFromLS()" style="display:none">Load from this browser</button>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <!-- DASHBOARD CONTENT -->
+    <div id="dash-content"></div>
+
+  </div>
+</div>
+
+<script>
+const PASS = 'FQ2026HR';
+let responses = [];
+const chartInstances = {};
+
+function login() {
+  const v = document.getElementById('pw').value;
+  const err = document.getElementById('pw-err');
+  if (v !== PASS) { err.classList.add('show'); return; }
+  err.classList.remove('show');
+  localStorage.removeItem('fq-wellness-2026');
+  document.getElementById('login').style.display = 'none';
+  document.getElementById('dash').style.display = 'block';
+  loadFromServer();
+}
+
+// ── SUPABASE ────────────────────────────────────────────────────────────────
+async function loadFromServer() {
+  const cfg   = typeof FQ_CONFIG !== 'undefined' ? FQ_CONFIG : {};
+  const txtEl = document.getElementById('asana-txt');
+  const btnEl = document.getElementById('asana-btn');
+  btnEl.style.display = 'none';
+  txtEl.textContent = 'Loading responses…';
+
+  if (!cfg.supabase_url || !cfg.supabase_key) {
+    txtEl.textContent = 'Supabase not configured — add your URL and key to config.js.';
+    btnEl.style.display = 'inline-block';
+    btnEl.textContent = 'Retry';
+    return;
+  }
+
+  try {
+    const res = await fetch(
+      cfg.supabase_url + '/rest/v1/responses?select=data&order=submitted_at.asc',
+      { headers: { 'apikey': cfg.supabase_key, 'Authorization': 'Bearer ' + cfg.supabase_key } }
+    );
+    if (!res.ok) throw new Error('Supabase error ' + res.status);
+    const rows = await res.json();
+    responses = rows.map(r => r.data).filter(Boolean);
+    localStorage.removeItem('fq-wellness-2026');
+    const n = responses.length;
+    txtEl.textContent = n > 0
+      ? `${n} response${n !== 1 ? 's' : ''} received.`
+      : 'No responses yet — share the survey link with employees.';
+    btnEl.style.display = 'inline-block';
+    btnEl.textContent = 'Refresh';
+    render();
+  } catch (err) {
+    responses = [];
+    render();
+    txtEl.textContent = 'Could not load responses. Check config.js.';
+    btnEl.style.display = 'inline-block';
+    btnEl.textContent = 'Retry';
+    console.error(err);
+  }
+}
+
+// ── LOCAL STORAGE ──────────────────────────────────────────────────────────
+function checkLS() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('fq-wellness-2026') || '[]');
+    const lsTxt = document.getElementById('ls-txt');
+    const lsBtn = document.getElementById('ls-btn');
+    if (saved.length > 0) {
+      lsTxt.textContent = `${saved.length} response${saved.length!==1?'s':''} saved in this browser.`;
+      lsBtn.style.display = 'inline-block';
+    } else {
+      lsTxt.textContent = 'No responses saved in this browser.';
+    }
+  } catch {}
+}
+
+function loadFromLS() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('fq-wellness-2026') || '[]');
+    if (!saved.length) return;
+    const existing = new Set(responses.map(r => r.id));
+    let added = 0;
+    saved.forEach(r => { if (!existing.has(r.id)) { responses.push(r); added++; } });
+    showImportStatus(`Loaded ${added} response${added!==1?'s':''} from this browser.`);
+    render();
+  } catch {}
+}
+
+// ── FILE IMPORT ────────────────────────────────────────────────────────────
+function onDragOver(e) { e.preventDefault(); document.getElementById('drop-zone').classList.add('over'); }
+function onDragLeave() { document.getElementById('drop-zone').classList.remove('over'); }
+function onDrop(e) { e.preventDefault(); document.getElementById('drop-zone').classList.remove('over'); loadFiles(e.dataTransfer.files); }
+function onFileSelect(e) { loadFiles(e.target.files); }
+
+function loadFiles(files) {
+  const arr = Array.from(files).filter(f => f.name.endsWith('.json'));
+  if (!arr.length) return;
+  let done = 0, added = 0;
+  const existing = new Set(responses.map(r => r.id));
+  arr.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const data = JSON.parse(ev.target.result);
+        const items = Array.isArray(data) ? data : [data];
+        items.forEach(r => { if (r && r.id && !existing.has(r.id)) { responses.push(r); existing.add(r.id); added++; } });
+      } catch {}
+      done++;
+      if (done === arr.length) { showImportStatus(`Added ${added} new response${added!==1?'s':''} from ${arr.length} file${arr.length!==1?'s':''}.`); render(); }
+    };
+    reader.readAsText(file);
+  });
+}
+
+function showImportStatus(msg) {
+  const el = document.getElementById('import-status');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 4000);
+}
+
+// ── STATS HELPERS ──────────────────────────────────────────────────────────
+function countVals(data, key) { const c={}; data.forEach(r=>{if(r[key])c[r[key]]=(c[r[key]]||0)+1}); return c; }
+function countMulti(data, key) { const c={}; data.forEach(r=>{if(Array.isArray(r[key]))r[key].forEach(v=>{c[v]=(c[v]||0)+1})}); return c; }
+function sorted(obj) { return Object.entries(obj).sort((a,b)=>b[1]-a[1]); }
+function avgNum(data, key) { const v=data.map(r=>r[key]).filter(x=>typeof x==='number'); return v.length?v.reduce((s,x)=>s+x,0)/v.length:0; }
+
+// ── RENDER ─────────────────────────────────────────────────────────────────
+function render() {
+  Object.values(chartInstances).forEach(c => c.destroy());
+  Object.keys(chartInstances).forEach(k => delete chartInstances[k]);
+
+  const content = document.getElementById('dash-content');
+  const n = responses.length;
+
+  if (!n) {
+    content.innerHTML = `<div class="empty"><div class="ei">📭</div><h2>No responses yet</h2><p>Responses will appear here automatically once employees submit the survey.</p></div>`;
+    return;
+  }
+
+  const avgSat      = avgNum(responses, 'satisfaction');
+  const remoteN     = responses.filter(r => r.work_arrangement === 'Fully Remote').length;
+  const oftenN      = responses.filter(r => ['Often (most events)','Every event'].includes(r.participation_frequency)).length;
+  const satDist     = countVals(responses, 'satisfaction');
+  const waDist      = countVals(responses, 'work_arrangement');
+  const pfDist      = countVals(responses, 'participation_frequency');
+  const deptDist    = countVals(responses, 'department');
+  const barriersDist= countMulti(responses, 'barriers');
+  const initDist    = countMulti(responses, 'favorite_initiatives');
+  const remoteResp  = responses.filter(r => r.work_arrangement === 'Fully Remote');
+  const motivDist   = countMulti(remoteResp, 'remote_motivators');
+  const pfOrder     = ['Never','Rarely (1–2 times per year)','Sometimes (every few months)','Often (most events)','Every event'];
+
+  content.innerHTML = `
+    <div class="stats">
+      <div class="stat"><div class="stat-val">${n}</div><div class="stat-lbl">Total Responses</div></div>
+      <div class="stat gold"><div class="stat-val">${avgSat.toFixed(1)}<span style="font-size:15px;font-weight:500">/5</span></div><div class="stat-lbl">Avg Satisfaction</div></div>
+      <div class="stat teal"><div class="stat-val">${Math.round(oftenN/n*100)}%</div><div class="stat-lbl">Participate Often or Every Event</div></div>
+      <div class="stat purple"><div class="stat-val">${Math.round(remoteN/n*100)}%</div><div class="stat-lbl">Fully Remote</div></div>
+    </div>
+
+    <div class="charts-2">
+      <div class="chart-card"><div class="ct">Satisfaction with Wellness Offerings</div><div style="position:relative;height:220px"><canvas id="ch-sat"></canvas></div></div>
+      <div class="chart-card"><div class="ct">Work Arrangement</div><div style="position:relative;height:220px"><canvas id="ch-wa"></canvas></div></div>
+    </div>
+    <div class="chart-card full"><div class="ct">Participation Frequency</div><div style="position:relative;height:200px"><canvas id="ch-pf"></canvas></div></div>
+    <div class="chart-card full"><div class="ct">Responses by Department</div><div style="position:relative;height:${Math.max(200,Object.keys(deptDist).length*38)}px"><canvas id="ch-dept"></canvas></div></div>
+    <div class="chart-card full"><div class="ct">Barriers to Participation <span class="ct-sub">select all that apply</span></div><div style="position:relative;height:${Math.max(200,Object.keys(barriersDist).length*42)}px"><canvas id="ch-bar"></canvas></div></div>
+    <div class="chart-card full"><div class="ct">Most Enjoyed Initiatives <span class="ct-sub">select all that apply</span></div><div style="position:relative;height:${Math.max(200,Object.keys(initDist).length*42)}px"><canvas id="ch-init"></canvas></div></div>
+    ${remoteN>0?`<div class="chart-card full"><div class="ct">Remote Employees: In-Office Motivators <span class="ct-sub">${remoteN} remote respondent${remoteN!==1?'s':''}</span></div><div style="position:relative;height:${Math.max(200,Object.keys(motivDist).length*42)}px"><canvas id="ch-motiv"></canvas></div></div>`:''}
+
+    <div class="text-section">
+      <h2>Open-Ended Responses</h2>
+      <div class="text-grid">
+        <div class="text-card"><h3>⏰ Preferred Day &amp; Time</h3><div class="tlist" id="tl-timing"></div></div>
+        <div class="text-card"><h3>📣 How to Hear About Events</h3><div class="tlist" id="tl-comm"></div></div>
+        <div class="text-card"><h3>💡 Desired Events &amp; Initiatives</h3><div class="tlist" id="tl-desired"></div></div>
+        <div class="text-card"><h3>💬 Additional Comments</h3><div class="tlist" id="tl-comments"></div></div>
+      </div>
+    </div>
+  `;
+
+  fillText('tl-timing',   'preferred_timing');
+  fillText('tl-comm',     'preferred_communication');
+  fillText('tl-desired',  'desired_events');
+  fillText('tl-comments', 'additional_comments');
+
+  const NAVY='#21232C', GOLD='#C08129', TEAL='#72806D', RED='#b83232', AMBER='#C08129', GREEN='#7c8a78';
+  const barOpts=(axis='x')=>({responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{[axis]:{beginAtZero:true,ticks:{stepSize:1}}}});
+
+  chartInstances.sat = new Chart(document.getElementById('ch-sat'),{type:'bar',data:{labels:['1 – Very dissatisfied','2 – Dissatisfied','3 – Neutral','4 – Satisfied','5 – Very satisfied'],datasets:[{data:[1,2,3,4,5].map(i=>satDist[i]||0),backgroundColor:[RED,AMBER,'#94a3b8',TEAL,GREEN],borderRadius:6,borderSkipped:false}]},options:barOpts()});
+
+  const waL=Object.keys(waDist);
+  chartInstances.wa = new Chart(document.getElementById('ch-wa'),{type:'doughnut',data:{labels:waL,datasets:[{data:waL.map(l=>waDist[l]),backgroundColor:[NAVY,GOLD,TEAL,'#7c3aed'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{padding:16,font:{size:13}}}},cutout:'60%'}});
+
+  const pfL=pfOrder.filter(l=>pfDist[l]);
+  chartInstances.pf = new Chart(document.getElementById('ch-pf'),{type:'bar',data:{labels:pfL,datasets:[{data:pfL.map(l=>pfDist[l]||0),backgroundColor:NAVY,borderRadius:6,borderSkipped:false}]},options:barOpts()});
+
+  const dP=sorted(deptDist);
+  chartInstances.dept = new Chart(document.getElementById('ch-dept'),{type:'bar',data:{labels:dP.map(p=>p[0]),datasets:[{data:dP.map(p=>p[1]),backgroundColor:NAVY,borderRadius:4,borderSkipped:false}]},options:{...barOpts('x'),indexAxis:'y'}});
+
+  const bP=sorted(barriersDist);
+  chartInstances.bar = new Chart(document.getElementById('ch-bar'),{type:'bar',data:{labels:bP.map(p=>p[0]),datasets:[{data:bP.map(p=>p[1]),backgroundColor:RED,borderRadius:4,borderSkipped:false}]},options:{...barOpts('x'),indexAxis:'y'}});
+
+  const iP=sorted(initDist);
+  chartInstances.init = new Chart(document.getElementById('ch-init'),{type:'bar',data:{labels:iP.map(p=>p[0]),datasets:[{data:iP.map(p=>p[1]),backgroundColor:GOLD,borderRadius:4,borderSkipped:false}]},options:{...barOpts('x'),indexAxis:'y'}});
+
+  if(remoteN>0&&Object.keys(motivDist).length){
+    const mP=sorted(motivDist);
+    chartInstances.motiv = new Chart(document.getElementById('ch-motiv'),{type:'bar',data:{labels:mP.map(p=>p[0]),datasets:[{data:mP.map(p=>p[1]),backgroundColor:TEAL,borderRadius:4,borderSkipped:false}]},options:{...barOpts('x'),indexAxis:'y'}});
+  }
+}
+
+function fillText(id, key) {
+  const el=document.getElementById(id);
+  const items=responses.map(r=>r[key]).filter(v=>v&&v.trim());
+  el.innerHTML=items.length?items.map(t=>`<div class="titem">${esc(t)}</div>`).join(''):'<span class="tempty">No responses yet.</span>';
+}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+function clearData(){
+  if(!confirm(`Clear all ${responses.length} loaded response${responses.length!==1?'s':''}? This does not delete the original JSON files.`))return;
+  responses=[];render();
+}
+
+function exportCSV(){
+  if(!responses.length){alert('No responses to export.');return;}
+  const cols=['submittedAt','department','work_arrangement','satisfaction','participation_frequency','barriers','favorite_initiatives','remote_motivators','preferred_timing','preferred_communication','desired_events','additional_comments'];
+  const rows=responses.map(r=>cols.map(c=>{const v=Array.isArray(r[c])?r[c].join('; '):(r[c]??'');return`"${String(v).replace(/"/g,'""')}"`}).join(','));
+  const csv=[cols.join(','),...rows].join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download=`FQ_Wellness_Survey_2026_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+</script>
+</body>
+</html>

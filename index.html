@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employee Wellness &amp; Events Survey 2026 | Furnished Quarters</title>
+  <script src="config.js"></script>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#F2E8D9;color:#21232C;min-height:100vh}
+    .hdr{background:#21232C;height:64px;display:flex;align-items:center;padding:0 24px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.2)}
+    .hdr-in{max-width:780px;margin:0 auto;width:100%;display:flex;align-items:center;justify-content:space-between}
+    .logo{display:flex;align-items:center;gap:10px}
+    .logo-mark{background:#C08129;color:#fff;font-weight:900;font-size:14px;width:36px;height:36px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .logo-name{color:#fff;font-size:15px;font-weight:600;line-height:1.2}
+    .logo-dept{color:rgba(255,255,255,.48);font-size:12px}
+    .badge{background:rgba(192,129,41,.18);color:#C08129;font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;border:1px solid rgba(192,129,41,.32)}
+    .screen{display:none}.screen.active{display:block}
+    .wrap{max-width:780px;margin:0 auto;padding:36px 20px 72px}
+    .intro-card{background:#F2F2EE;border-radius:16px;padding:52px 44px;box-shadow:0 4px 24px rgba(33,35,44,.09);text-align:center;border:1px solid #CBC4BB}
+    .intro-icon{font-size:54px;margin-bottom:20px}
+    .intro-card h1{font-size:26px;font-weight:700;color:#21232C;margin-bottom:14px;line-height:1.35}
+    .intro-card p{font-size:15px;color:#5a5851;line-height:1.75;margin-bottom:20px;max-width:560px;margin-left:auto;margin-right:auto}
+    .intro-meta{display:flex;justify-content:center;gap:28px;margin-bottom:36px;flex-wrap:wrap}
+    .meta-item{display:flex;align-items:center;gap:6px;font-size:13px;color:#72806D}
+    .btn-primary{background:#21232C;color:#fff;border:none;padding:16px 44px;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;transition:background .2s,transform .1s;display:inline-flex;align-items:center;gap:8px}
+    .btn-primary:hover{background:#72806D;transform:translateY(-1px)}
+    .card{background:#F2F2EE;border-radius:14px;padding:40px;box-shadow:0 2px 12px rgba(33,35,44,.07);margin-bottom:20px;border:1px solid #CBC4BB}
+    .q{margin-bottom:34px}.q:last-child{margin-bottom:0}
+    .q-label{font-size:16px;font-weight:600;color:#21232C;margin-bottom:14px;line-height:1.5;display:flex;gap:9px;align-items:flex-start}
+    .q-num{background:#21232C;color:#fff;font-size:11px;font-weight:700;min-width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-top:2px;flex-shrink:0}
+    .req{color:#b83232;margin-left:2px}.opt-tag{font-size:12px;font-weight:400;color:#9a9590;margin-left:4px}
+    .q-hint{font-size:13px;color:#72806D;margin-bottom:12px;margin-top:-8px;padding-left:31px}
+    .fq-sel{width:100%;padding:12px 16px;border:2px solid #CBC4BB;border-radius:8px;font-size:15px;color:#21232C;background:#F2E8D9 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2372806D' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 14px center;-webkit-appearance:none;outline:none;cursor:pointer;transition:border-color .15s}
+    .fq-sel:focus{border-color:#21232C}
+    .scale-row{display:flex;gap:8px}
+    .s-btn{flex:1;padding:14px 6px;border:2px solid #CBC4BB;border-radius:10px;background:#F2E8D9;cursor:pointer;text-align:center;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:5px}
+    .s-btn:hover{border-color:#7c8a78;background:#EDE7DF}.s-btn.sel{border-color:#21232C;background:#21232C}
+    .s-num{font-size:20px;font-weight:700;color:#21232C;transition:color .15s}.s-btn.sel .s-num{color:#fff}
+    .s-lbl{font-size:10px;color:#9a9590;text-align:center;line-height:1.3;transition:color .15s}.s-btn.sel .s-lbl{color:rgba(255,255,255,.7)}
+    .opts{display:flex;flex-direction:column;gap:8px}
+    .opt{display:flex;align-items:center;gap:12px;padding:12px 16px;border:2px solid #CBC4BB;border-radius:8px;cursor:pointer;transition:all .15s;background:#F2E8D9}
+    .opt:hover{border-color:#7c8a78;background:#EDE7DF}.opt.sel{border-color:#21232C;background:#E8E2DB}
+    .opt input{width:18px;height:18px;accent-color:#21232C;flex-shrink:0;cursor:pointer}.opt-txt{font-size:15px;color:#21232C}
+    .cb-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .cb{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border:2px solid #CBC4BB;border-radius:8px;cursor:pointer;transition:all .15s;background:#F2E8D9}
+    .cb:hover{border-color:#7c8a78;background:#EDE7DF}.cb.sel{border-color:#21232C;background:#E8E2DB}
+    .cb input{width:16px;height:16px;accent-color:#21232C;flex-shrink:0;margin-top:2px;cursor:pointer}.cb-txt{font-size:14px;color:#21232C;line-height:1.4}
+    .fq-input{width:100%;padding:12px 16px;border:2px solid #CBC4BB;border-radius:8px;font-size:15px;color:#21232C;font-family:inherit;outline:none;transition:border-color .15s;background:#F2E8D9}
+    .fq-input:focus{border-color:#21232C}
+    .fq-ta{width:100%;padding:12px 16px;border:2px solid #CBC4BB;border-radius:8px;font-size:15px;color:#21232C;font-family:inherit;resize:vertical;min-height:100px;outline:none;transition:border-color .15s;background:#F2E8D9}
+    .fq-ta:focus{border-color:#21232C}
+    .div{border:none;border-top:1px solid #CBC4BB;margin:30px 0}
+    .cond{display:none}.cond.show{display:block}
+    .err{color:#b83232;font-size:13px;margin-top:8px;padding-left:31px;display:none}.err.show{display:block}
+    .sub-area{text-align:center;padding-top:8px}
+    .btn-sub{background:#21232C;color:#fff;border:none;padding:18px 60px;border-radius:10px;font-size:17px;font-weight:600;cursor:pointer;transition:all .2s}
+    .btn-sub:hover{background:#72806D;transform:translateY(-1px);box-shadow:0 4px 14px rgba(33,35,44,.25)}
+    .btn-sub:disabled{opacity:.6;cursor:not-allowed;transform:none;box-shadow:none}
+    .ty{background:#F2F2EE;border-radius:16px;padding:72px 44px;box-shadow:0 4px 24px rgba(33,35,44,.09);text-align:center;border:1px solid #CBC4BB}
+    .ty-icon{font-size:72px;margin-bottom:28px}.ty h1{font-size:30px;font-weight:700;color:#21232C;margin-bottom:16px}
+    .ty p{font-size:16px;color:#5a5851;line-height:1.75;max-width:480px;margin:0 auto 12px}
+    .ty-note{background:#EEF0ED;border:1px solid #7c8a78;border-radius:10px;padding:16px 20px;margin:20px auto 0;max-width:480px;font-size:14px;color:#4a5447;line-height:1.6}
+    @media(max-width:620px){
+      .wrap{padding:20px 14px 48px}.card,.intro-card{padding:28px 18px}
+      .scale-row{gap:4px}.s-btn{padding:10px 2px}.s-lbl{display:none}
+      .cb-grid{grid-template-columns:1fr}.intro-meta{flex-direction:column;align-items:center;gap:12px}
+    }
+  </style>
+</head>
+<body>
+
+<div id="scr-intro" class="screen active">
+  <div class="hdr"><div class="hdr-in">
+    <div class="logo"><div class="logo-mark">FQ</div><div><div class="logo-name">Furnished Quarters</div><div class="logo-dept">Human Resources</div></div></div>
+    <span class="badge">2026 Survey</span>
+  </div></div>
+  <div class="wrap"><div class="intro-card">
+    <div class="intro-icon">🌿</div>
+    <h1>Employee Wellness &amp; Events Survey 2026</h1>
+    <p>We're building out our wellness and events programming for 2026 — and we want it to reflect what you actually enjoy and what would make a real difference in your day-to-day. Your honest feedback shapes what we build for everyone.</p>
+    <div class="intro-meta">
+      <span class="meta-item">⏱️ Takes about 3–5 minutes</span>
+      <span class="meta-item">🔒 Completely anonymous</span>
+      <span class="meta-item">📅 Closes April 30th</span>
+    </div>
+    <button class="btn-primary" onclick="go('survey')">Start Survey &rarr;</button>
+  </div></div>
+</div>
+
+<div id="scr-survey" class="screen">
+  <div class="hdr"><div class="hdr-in">
+    <div class="logo"><div class="logo-mark">FQ</div><div><div class="logo-name">Furnished Quarters</div><div class="logo-dept">Human Resources</div></div></div>
+    <span class="badge">2026 Survey</span>
+  </div></div>
+  <div class="wrap">
+    <form id="form" onsubmit="doSubmit(event)" novalidate>
+      <div class="card">
+
+        <div class="q">
+          <div class="q-label"><span class="q-num">1</span>What is your department?<span class="req">*</span></div>
+          <select name="department" class="fq-sel" required>
+            <option value="">— Select your department —</option>
+            <option>Accounting</option><option>Accounts Payable</option><option>Accounts Receivable</option>
+            <option>Apartment Services</option><option>Design</option><option>Executive</option>
+            <option>Global Accounting</option><option>Global Solutions</option><option>Guest Services</option>
+            <option>Human Resources</option><option>Marketing</option><option>Operations</option>
+            <option>Ownership</option><option>Payroll</option><option>Property Leasing</option>
+            <option>Sales</option><option>Technology</option>
+          </select>
+          <div class="err" id="err-department">Please select your department.</div>
+        </div>
+
+        <hr class="div">
+
+        <div class="q">
+          <div class="q-label"><span class="q-num">2</span>What is your work arrangement?<span class="req">*</span></div>
+          <div class="opts" id="wa-opts">
+            <label class="opt"><input type="radio" name="work_arrangement" value="Fully Remote" onchange="onWA(this)"><span class="opt-txt">Fully Remote</span></label>
+            <label class="opt"><input type="radio" name="work_arrangement" value="Hybrid" onchange="onWA(this)"><span class="opt-txt">Hybrid</span></label>
+            <label class="opt"><input type="radio" name="work_arrangement" value="Fully In-Office" onchange="onWA(this)"><span class="opt-txt">Fully In-Office</span></label>
+          </div>
+          <div class="err" id="err-work_arrangement">Please select your work arrangement.</div>
+        </div>
+
+        <hr class="div">
+
+        <div class="q">
+          <div class="q-label"><span class="q-num">3</span>How satisfied are you with our current wellness offerings?<span class="req">*</span></div>
+          <div class="scale-row">
+            <button type="button" class="s-btn" data-q="satisfaction" data-val="1" onclick="pickScale(this)"><span class="s-num">1</span><span class="s-lbl">Very<br>dissatisfied</span></button>
+            <button type="button" class="s-btn" data-q="satisfaction" data-val="2" onclick="pickScale(this)"><span class="s-num">2</span><span class="s-lbl">Dissatisfied</span></button>
+            <button type="button" class="s-btn" data-q="satisfaction" data-val="3" onclick="pickScale(this)"><span class="s-num">3</span><span class="s-lbl">Neutral</span></button>
+            <button type="button" class="s-btn" data-q="satisfaction" data-val="4" onclick="pickScale(this)"><span class="s-num">4</span><span class="s-lbl">Satisfied</span></button>
+            <button type="button" class="s-btn" data-q="satisfaction" data-val="5" onclick="pickScale(this)"><span class="s-num">5</span><span class="s-lbl">Very<br>satisfied</span></button>
+          </div>
+          <input type="hidden" id="satisfaction-val" name="satisfaction">
+          <div class="err" id="err-satisfaction">Please select a rating.</div>
+        </div>
+
+        <hr class="div">
+
+        <div class="q">
+          <div class="q-label"><span class="q-num">4</span>How often do you participate in FQ wellness offerings?<span class="req">*</span></div>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="participation_frequency" value="Never"><span class="opt-txt">Never</span></label>
+            <label class="opt"><input type="radio" name="participation_frequency" value="Rarely (1–2 times per year)"><span class="opt-txt">Rarely (1–2 times per year)</span></label>
+            <label class="opt"><input type="radio" name="participation_frequency" value="Sometimes (every few months)"><span class="opt-txt">Sometimes (every few months)</span></label>
+            <label class="opt"><input type="radio" name="participation_frequency" value="Often (most events)"><span class="opt-txt">Often (most events)</span></label>
+            <label class="opt"><input type="radio" name="participation_frequency" value="Every event"><span class="opt-txt">Every event</span></label>
+          </div>
+          <div class="err" id="err-participation_frequency">Please select an option.</div>
+        </div>
+
+        <hr class="div">
+
+        <div class="q">
+          <div class="q-label"><span class="q-num">5</span>What prevents you from participating in wellness events?<span class="req">*</span></div>
+          <div class="q-hint">Select all that apply</div>
+          <div class="cb-grid">
+            <label class="cb"><input type="checkbox" name="barriers" value="Timing doesn't fit my schedule"><span class="cb-txt">The timing of events don't fit my schedule</span></label>
+            <label class="cb"><input type="checkbox" name="barriers" value="Too busy with workload"><span class="cb-txt">Too busy with workload</span></label>
+            <label class="cb"><input type="checkbox" name="barriers" value="Not interested in current offerings"><span class="cb-txt">Not interested in current offerings</span></label>
+            <label class="cb"><input type="checkbox" name="barriers" value="Lack of awareness of events"><span class="cb-txt">Lack of awareness of events</span></label>
+            <label class="cb"><input type="checkbox" name="barriers" value="Events feel irrelevant to me"><span class="cb-txt">Events feel irrelevant to me</span></label>
+            <label class="cb"><input type="checkbox" name="barriers" value="N/A — I typically participate"><span class="cb-txt">N/A — I typically participate</span></label>
+            <label class="cb"><input type="checkbox" name="barriers" value="Other"><span class="cb-txt">Other</span></label>
+          </div>
+          <div class="err" id="err-barriers">Please select at least one option.</div>
+        </div>
+
+        <hr class="div">
+
+        <div class="q">
+          <div class="q-label"><span class="q-num">6</span>What wellness initiatives do you enjoy the most?<span class="req">*</span></div>
+          <div class="q-hint">Select all that apply</div>
+          <div class="cb-grid">
+            <label class="cb"><input type="checkbox" name="favorite_initiatives" value="Word Search email game"><span class="cb-txt">Word Search email game</span></label>
+            <label class="cb"><input type="checkbox" name="favorite_initiatives" value="Bingo"><span class="cb-txt">Bingo (American Heart Month, Earth Day, Stress Awareness)</span></label>
+            <label class="cb"><input type="checkbox" name="favorite_initiatives" value="Trivia"><span class="cb-txt">Trivia (Thanksgiving, Valentine's Day)</span></label>
+            <label class="cb"><input type="checkbox" name="favorite_initiatives" value="Crossword Puzzle games"><span class="cb-txt">Crossword Puzzle games</span></label>
+            <label class="cb"><input type="checkbox" name="favorite_initiatives" value="Fall Photo Contest"><span class="cb-txt">Fall Photo Contest</span></label>
+            <label class="cb"><input type="checkbox" name="favorite_initiatives" value="Virtual Chair Yoga"><span class="cb-txt">Virtual Chair Yoga</span></label>
+            <label class="cb"><input type="checkbox" name="favorite_initiatives" value="Virtual Guided Meditation"><span class="cb-txt">Virtual Guided Meditation</span></label>
+            <label class="cb"><input type="checkbox" name="favorite_initiatives" value="Halloween Costume Contest"><span class="cb-txt">Halloween Costume Contest</span></label>
+            <label class="cb"><input type="checkbox" name="favorite_initiatives" value="Nutrition Webinar"><span class="cb-txt">Nutrition Webinar</span></label>
+            <label class="cb"><input type="checkbox" name="favorite_initiatives" value="Financial Webinar"><span class="cb-txt">Financial Webinar</span></label>
+            <label class="cb"><input type="checkbox" name="favorite_initiatives" value="Sleep Challenge"><span class="cb-txt">Sleep Challenge</span></label>
+            <label class="cb"><input type="checkbox" name="favorite_initiatives" value="Walking Challenge"><span class="cb-txt">Walking Challenge</span></label>
+            <label class="cb"><input type="checkbox" name="favorite_initiatives" value="Step Challenge"><span class="cb-txt">Step Challenge</span></label>
+            <label class="cb"><input type="checkbox" name="favorite_initiatives" value="Hydration Challenge"><span class="cb-txt">Hydration Challenge</span></label>
+            <label class="cb"><input type="checkbox" name="favorite_initiatives" value="Exercise Challenge"><span class="cb-txt">Exercise Challenge</span></label>
+            <label class="cb"><input type="checkbox" name="favorite_initiatives" value="None of these"><span class="cb-txt">None of these</span></label>
+            <label class="cb"><input type="checkbox" name="favorite_initiatives" value="Other"><span class="cb-txt">Other</span></label>
+          </div>
+          <div class="err" id="err-favorite_initiatives">Please select at least one option.</div>
+        </div>
+
+        <div class="cond" id="q7-wrap">
+          <hr class="div">
+          <div class="q">
+            <div class="q-label"><span class="q-num">7</span>You selected Fully Remote — if you're local to the NYC office, what would motivate you to attend an in-office event?</div>
+            <div class="q-hint">Select all that apply</div>
+            <div class="cb-grid">
+              <label class="cb"><input type="checkbox" name="remote_motivators" value="In-Office CPR training demonstration"><span class="cb-txt">In-Office CPR training demonstration</span></label>
+              <label class="cb"><input type="checkbox" name="remote_motivators" value="Healthy Eating Seminar with catered lunch/snacks"><span class="cb-txt">Healthy Eating Seminar with a catered lunch and/or snacks</span></label>
+              <label class="cb"><input type="checkbox" name="remote_motivators" value="Chair Massages"><span class="cb-txt">Chair Massages</span></label>
+              <label class="cb"><input type="checkbox" name="remote_motivators" value="Puppies in the office"><span class="cb-txt">Puppies in the office</span></label>
+              <label class="cb"><input type="checkbox" name="remote_motivators" value="Flu Shot Clinic"><span class="cb-txt">Flu Shot Clinic</span></label>
+              <label class="cb"><input type="checkbox" name="remote_motivators" value="I wouldn't come in for a wellness event"><span class="cb-txt">I wouldn't come into the office just for a wellness event</span></label>
+              <label class="cb"><input type="checkbox" name="remote_motivators" value="Other"><span class="cb-txt">Other</span></label>
+            </div>
+          </div>
+        </div>
+
+        <hr class="div">
+
+        <div class="q">
+          <div class="q-label"><span class="q-num">8</span>What is your preferred day of the week and time to participate in wellness offerings? (please include time zone)<span class="req">*</span></div>
+          <input type="text" name="preferred_timing" class="fq-input" placeholder="e.g. Tuesdays at noon ET, Friday afternoons PT…">
+          <div class="err" id="err-preferred_timing">Please share your preferred timing.</div>
+        </div>
+
+        <hr class="div">
+
+        <div class="q">
+          <div class="q-label"><span class="q-num">9</span>How do you prefer to hear about wellness events?<span class="req">*</span></div>
+          <input type="text" name="preferred_communication" class="fq-input" placeholder="e.g. Email, Teams message, company newsletter…">
+          <div class="err" id="err-preferred_communication">Please share your preference.</div>
+        </div>
+
+        <hr class="div">
+
+        <div class="q">
+          <div class="q-label"><span class="q-num">10</span>What wellness events or initiatives would you like to see us offer?<span class="req">*</span></div>
+          <div class="q-hint">Examples: fitness classes, financial wellness, mental health support, social events, etc.</div>
+          <textarea name="desired_events" class="fq-ta" placeholder="Share your ideas…"></textarea>
+          <div class="err" id="err-desired_events">Please share at least one idea.</div>
+        </div>
+
+        <hr class="div">
+
+        <div class="q">
+          <div class="q-label"><span class="q-num">11</span>Is there anything else we should know?<span class="opt-tag">(optional)</span></div>
+          <div class="q-hint">Feedback on past events, timing, format, or ideas for improvement</div>
+          <textarea name="additional_comments" class="fq-ta" placeholder="Any other thoughts…"></textarea>
+        </div>
+
+      </div>
+      <div class="sub-area">
+        <button type="submit" class="btn-sub" id="sub-btn">Submit Survey</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="scr-thankyou" class="screen">
+  <div class="hdr"><div class="hdr-in">
+    <div class="logo"><div class="logo-mark">FQ</div><div><div class="logo-name">Furnished Quarters</div><div class="logo-dept">Human Resources</div></div></div>
+    <span class="badge">2026 Survey</span>
+  </div></div>
+  <div class="wrap"><div class="ty">
+    <div class="ty-icon">✅</div>
+    <h1>Thank You!</h1>
+    <p>Your response has been recorded. We truly appreciate you taking the time — your feedback directly shapes the wellness and events programming we build for 2026.</p>
+    <div class="ty-note">Your response has been recorded — no further action needed from you. Thank you!</div>
+  </div></div>
+</div>
+
+<script>
+function go(scr){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('scr-'+scr).classList.add('active');window.scrollTo(0,0)}
+function onWA(input){document.querySelectorAll('#wa-opts .opt').forEach(o=>o.classList.toggle('sel',o.querySelector('input')===input));document.getElementById('q7-wrap').classList.toggle('show',input.value==='Fully Remote');clearErr('work_arrangement')}
+function pickScale(btn){const q=btn.dataset.q;document.querySelectorAll(`.s-btn[data-q="${q}"]`).forEach(b=>b.classList.remove('sel'));btn.classList.add('sel');document.getElementById(q+'-val').value=btn.dataset.val;clearErr(q)}
+function clearErr(n){const e=document.getElementById('err-'+n);if(e)e.classList.remove('show')}
+document.addEventListener('change',e=>{const el=e.target;if(el.type==='checkbox'){el.closest('.cb').classList.toggle('sel',el.checked);clearErr(el.name)}if(el.type==='radio'&&el.name!=='work_arrangement'){document.querySelectorAll(`input[name="${el.name}"]`).forEach(r=>r.closest('.opt').classList.toggle('sel',r===el));clearErr(el.name)}});
+document.querySelectorAll('.fq-input,.fq-ta').forEach(el=>el.addEventListener('input',()=>clearErr(el.name)));
+
+function validate(){
+  let ok=true;
+  const rules=[{name:'department',type:'select'},{name:'work_arrangement',type:'radio'},{name:'satisfaction',type:'hidden'},{name:'participation_frequency',type:'radio'},{name:'barriers',type:'checkbox'},{name:'favorite_initiatives',type:'checkbox'},{name:'preferred_timing',type:'text'},{name:'preferred_communication',type:'text'},{name:'desired_events',type:'textarea'}];
+  rules.forEach(({name,type})=>{
+    const e=document.getElementById('err-'+name);if(!e)return;
+    let ans=false;
+    if(type==='select'){const el=document.querySelector(`select[name="${name}"]`);ans=el&&el.value!==''}
+    else if(type==='radio'){ans=!!document.querySelector(`input[name="${name}"]:checked`)}
+    else if(type==='hidden'){ans=document.getElementById(name+'-val').value!==''}
+    else if(type==='checkbox'){ans=document.querySelectorAll(`input[name="${name}"]:checked`).length>0}
+    else{const el=document.querySelector(`[name="${name}"]`);ans=el&&el.value.trim()!==''}
+    if(!ans){e.classList.add('show');ok=false;}
+  });
+  return ok;
+}
+
+function collect(){
+  const f=document.getElementById('form');
+  const d={id:Date.now(),submittedAt:new Date().toISOString()};
+  d.department=f.querySelector('select[name="department"]').value;
+  ['work_arrangement','participation_frequency'].forEach(n=>{const c=f.querySelector(`input[name="${n}"]:checked`);d[n]=c?c.value:''});
+  d.satisfaction=parseInt(document.getElementById('satisfaction-val').value)||null;
+  ['barriers','favorite_initiatives','remote_motivators'].forEach(n=>{d[n]=Array.from(f.querySelectorAll(`input[name="${n}"]:checked`)).map(c=>c.value)});
+  ['preferred_timing','preferred_communication'].forEach(n=>{const el=f.querySelector(`input[name="${n}"]`);d[n]=el?el.value.trim():''});
+  ['desired_events','additional_comments'].forEach(n=>{const el=f.querySelector(`textarea[name="${n}"]`);d[n]=el?el.value.trim():''});
+  return d;
+}
+
+function saveToLocalStorage(data){
+  try{const key='fq-wellness-2026';const all=JSON.parse(localStorage.getItem(key)||'[]');all.push(data);localStorage.setItem(key,JSON.stringify(all));}catch(e){}
+}
+
+async function doSubmit(e){
+  e.preventDefault();
+  if(!validate()){document.querySelector('.err.show')?.scrollIntoView({behavior:'smooth',block:'center'});return;}
+  const btn=document.getElementById('sub-btn');
+  btn.disabled=true;btn.textContent='Submitting…';
+  const data=collect();
+  const cfg=typeof FQ_CONFIG!=='undefined'?FQ_CONFIG:{};
+  try{
+    if(!cfg.supabase_url||!cfg.supabase_key)throw new Error('No Supabase config');
+    const res=await fetch(cfg.supabase_url+'/rest/v1/responses',{
+      method:'POST',
+      headers:{
+        'apikey':cfg.supabase_key,
+        'Authorization':'Bearer '+cfg.supabase_key,
+        'Content-Type':'application/json',
+        'Prefer':'return=minimal'
+      },
+      body:JSON.stringify({id:data.id,submitted_at:data.submittedAt,data:data})
+    });
+    if(!res.ok){const t=await res.text();throw new Error(t);}
+  }catch(err){
+    console.warn('Submit failed:',err);
+  }
+  go('thankyou');
+}
+</script>
+</body>
+</html>
